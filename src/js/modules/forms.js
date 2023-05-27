@@ -1,17 +1,12 @@
-const forms = () => {
+import checkNumInputs from './checkNumInputs';
+
+const forms = (state) => {
 	const form = document.querySelectorAll('form'),
 		inputs = document.querySelectorAll('input'),
-		phoneInputs = document.querySelectorAll('input[name="user_phone"]');
+		windows = document.querySelectorAll('[data-modal]');
 
-	phoneInputs.forEach(item => {
-		item.addEventListener('input', () => {
-			//видаляє все, що не є числом
-			/* item.value = item.value.replace(/\D/, ''); */
-			//видаляється все, що не є числом, - та +
-			item.value = item.value.replace(/[^\d+/-]/g, '');
-		});
-	});
-
+	checkNumInputs('input[name="user_phone"]');
+	
 	const message = {
 		loading: 'Йде відправка',
 		success: 'Дякуємо за заявку! Невдовзі ми з Вами зв\'яжемось!',
@@ -26,6 +21,11 @@ const forms = () => {
 			body: data
 		});
 
+		// Очищення об'єкта state - при новому заповненні користувач формує новий об'єкт
+		for (let key in state) {
+			delete state[key];
+		}
+
 		return await res.text();
 	};
 
@@ -33,7 +33,7 @@ const forms = () => {
 	const clearInputs = () => {
 		inputs.forEach(item => {
 			item.value = '';
-		});
+		});	
 	};
 
 	//Перебір форм і назначення обробника подій
@@ -47,6 +47,15 @@ const forms = () => {
 			item.appendChild(statusMessage);
 			//збираємо дані з форми
 			const formData = new FormData(item);
+
+			//додаємо додаткову умову для форми-калькулятор, щоб зібрати дані
+			if (item.getAttribute('data-calc') === 'end') {
+				for (let key in state) {
+					formData.append(key, state[key]);
+				}
+			}
+
+
 			// відправляємо запит на сервер
 			postData('assets/server.php', formData)
 				.then(res => {
@@ -57,7 +66,11 @@ const forms = () => {
 				.finally(() => {
 					clearInputs();
 					setTimeout(() => {
-						statusMessage.remove();
+						statusMessage.remove();		
+						//форма закривається
+						windows.forEach(item => {
+							item.style.display = 'none';
+						});				
 					}, 5000);
 				});
 		});
