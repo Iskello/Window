@@ -3,7 +3,8 @@ const modals = () => {
 		const trigger = document.querySelectorAll(triggerSelector),
 			modal = document.querySelector(modalSelector),
 			close = document.querySelector(closeSelector),
-			windows = document.querySelectorAll('[data-modal]');
+			windows = document.querySelectorAll('[data-modal]'),
+			scroll = calcScroll();
 
 		trigger.forEach(item => {
 			item.addEventListener('click', (e) => {
@@ -18,6 +19,7 @@ const modals = () => {
 				modal.style.display = 'block';
 				/* document.body.style.overflow = 'hidden'; */
 				document.body.classList.add('modal-open');
+				document.body.style.marginRight = `${scroll}px`;
 				clearTimeout(timerId);
 			});
 		});
@@ -31,6 +33,7 @@ const modals = () => {
 			modal.style.display = 'none';
 			/* document.body.style.overflow = ''; */
 			document.body.classList.remove('modal-open');
+			document.body.style.marginRight = '0px';
 		});
 
 		//закриття по кліку на оверлей
@@ -43,6 +46,7 @@ const modals = () => {
 				modal.style.display = 'none';
 				/* document.body.style.overflow = ''; */
 				document.body.classList.remove('modal-open');
+				document.body.style.marginRight = '0px';
 			}
 		});
 
@@ -56,6 +60,7 @@ const modals = () => {
 				modal.style.display = 'none';
 				/* document.body.style.overflow = ''; */
 				document.body.classList.remove('modal-open');
+				document.body.style.marginRight = '0px';
 			}
 		});
 
@@ -69,6 +74,26 @@ const modals = () => {
 			document.body.style.overflow = 'hidden';
 		}, time);
 	}
+
+
+	//функція яка рахує ширину скролла
+	function calcScroll() {
+		let div = document.createElement('div');
+
+		div.style.width = '50px';
+		div.style.height = '50px';
+		div.style.overflowY = 'scroll';
+		div.style.visibility = 'hidden';
+
+		document.body.appendChild(div);
+		//отримуємо ширину прокрутки (віднімаємо від повної ширини ширину контенту)
+		let scrollWidth = div.offsetWidth - div.clientWidth;
+		div.remove();
+
+		return scrollWidth;
+	}
+
+
 	
 
 	bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
