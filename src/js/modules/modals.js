@@ -78,7 +78,34 @@ const modals = () => {
 	
 	
 	bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');	
-	bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+
+	//код який перевіряє за заповненість полів ширини і висоти
+	const widthInput = document.querySelector('#width');
+	const heightInput = document.querySelector('#height');
+	const calcButton = document.querySelector('.popup_calc_button');
+	let isInputValid = false;
+
+	calcButton.addEventListener('mousedown', (e) => {
+		e.preventDefault();
+
+		if (widthInput.value.trim() === '' || heightInput.value.trim() === '') {
+			widthInput.focus();
+			/* widthInput.classList.add('input-error');
+			heightInput.classList.add('input-error'); */
+			alert('Будь ласка, заповніть усі поля');
+			isInputValid = false; // Значення поля недійсне
+		} else {
+			isInputValid = true; // Значення поля дійсне
+		}
+		
+		if (isInputValid) {
+			bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+		}
+	});
+
+
+
+	/* bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false); */
 	bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false);
 	
 

@@ -1,7 +1,7 @@
 const checkNumInputs = (selector) => {
-    const numInputs = document.querySelectorAll(selector);
+	const numInputs = document.querySelectorAll(selector);
 
-    numInputs.forEach(item => {
+	numInputs.forEach(item => {
 		item.addEventListener('input', () => {
 			//видаляє все, що не є числом
 			/* item.value = item.value.replace(/\D/, ''); */
@@ -12,6 +12,6 @@ const checkNumInputs = (selector) => {
 
 
 
-}
+};
 
 export default checkNumInputs;

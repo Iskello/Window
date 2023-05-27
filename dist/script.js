@@ -13838,6 +13838,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_images__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/images */ "./src/js/modules/images.js");
+
 
 
 
@@ -13856,6 +13858,7 @@ window.addEventListener('DOMContentLoaded', () => {
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState);
   let deadline = '2023-06-02';
   Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('#timer', deadline);
+  Object(_modules_images__WEBPACK_IMPORTED_MODULE_6__["default"])();
 });
 
 /***/ }),
@@ -14048,6 +14051,50 @@ const forms = state => {
 
 /***/ }),
 
+/***/ "./src/js/modules/images.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/images.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+const images = () => {
+  const imgPopup = document.createElement('div'),
+    workSection = document.querySelector('.works'),
+    bigImage = document.createElement('img');
+  imgPopup.classList.add('popup');
+  workSection.appendChild(imgPopup);
+
+  //ставимо об'єкт по центру
+  imgPopup.style.justifyContent = 'center';
+  imgPopup.style.alignItems = 'center';
+  imgPopup.style.display = 'none';
+
+  //обмеження розмірів великої картинки для маленьких екранів
+  bigImage.style.maxWidth = '80vw';
+  bigImage.style.maxHeight = '90vh';
+  imgPopup.appendChild(bigImage);
+  workSection.addEventListener('click', e => {
+    e.preventDefault();
+    let target = e.target;
+    if (target && target.classList.contains('preview')) {
+      imgPopup.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      const path = target.parentNode.getAttribute('href');
+      bigImage.setAttribute('src', path);
+    }
+    if (target && target.matches('div.popup')) {
+      imgPopup.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
+};
+/* harmony default export */ __webpack_exports__["default"] = (images);
+
+/***/ }),
+
 /***/ "./src/js/modules/modals.js":
 /*!**********************************!*\
   !*** ./src/js/modules/modals.js ***!
@@ -14123,7 +14170,30 @@ const modals = () => {
   bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
   bindModal('.phone_link', '.popup', '.popup .popup_close');
   bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');
-  bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+
+  //код який перевіряє за заповненість полів ширини і висоти
+  const widthInput = document.querySelector('#width');
+  const heightInput = document.querySelector('#height');
+  const calcButton = document.querySelector('.popup_calc_button');
+  let isInputValid = false;
+  calcButton.addEventListener('mousedown', e => {
+    e.preventDefault();
+    if (widthInput.value.trim() === '' || heightInput.value.trim() === '') {
+      widthInput.focus();
+      /* widthInput.classList.add('input-error');
+      heightInput.classList.add('input-error'); */
+      alert('Будь ласка, заповніть усі поля');
+      isInputValid = false; // Значення поля недійсне
+    } else {
+      isInputValid = true; // Значення поля дійсне
+    }
+
+    if (isInputValid) {
+      bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+    }
+  });
+
+  /* bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false); */
   bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false);
 
   /* showModalByTime('.popup', 60000); */
